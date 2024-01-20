@@ -18,6 +18,14 @@ function renderComponent() {
   );
 }
 
-test("shows a link to the github homepage for this repository", () => {
+test("shows a link to the github homepage for this repository", async () => {
   renderComponent();
 });
+
+const pause = () => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, 100);
+  });
+};
