@@ -5,8 +5,6 @@ import RepositoriesSummary from "./RepositoriesSummary";
 function RepositoriesListItem({ repository }) {
   const { full_name, language, description, owner, name } = repository;
 
-  console.log(repository);
-
   return (
     <div className="py-3 border-b flex">
       <FileIcon name={language} className="shrink w-6 pt-1" />
