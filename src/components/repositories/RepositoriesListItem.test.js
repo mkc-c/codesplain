@@ -1,19 +1,61 @@
-import { screen, render } from "@testing-library/react";
-import RepositoriesSummary from "./RepositoriesSummary";
+import { render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router";
+import RepositoriesListItem from "./RepositoriesListItem";
 
-test("displays information about the repository", () => {
+function renderComponent() {
   const repository = {
+    full_name: "facebook/react",
     language: "Javascript",
-    stargazers_count: 5,
-    forks: 30,
-    open_issues: 1,
+    description: "A js library",
+    owner: {
+      login: "facebook",
+    },
+    name: "react",
+    html_url: "https://github.com/facebook/react",
   };
-  render(<RepositoriesSummary repository={repository} />);
+  render(
+    <MemoryRouter>
+      <RepositoriesListItem repository={repository} />
+    </MemoryRouter>
+  );
 
-  for (let key in repository) {
-    const value = repository[key];
-    const element = screen.getByText(new RegExp(value));
+  return { repository };
+}
 
-    expect(element).toBeInTheDocument();
-  }
+test("shows a link to the github homepage for this repository", async () => {
+  const { repository } = renderComponent();
+
+  await screen.findByRole("img", {
+    name: "Javascript",
+  });
+
+  const link = screen.getByRole("link", {
+    name: /github repository/i,
+  });
+
+  expect(link).toHaveAttribute("href", repository.html_url);
+});
+
+test("shows a file icon with the appropriate icon", async () => {
+  renderComponent();
+
+  const icon = await screen.findByRole("img", {
+    name: "Javascript",
+  });
+
+  expect(icon).toHaveClass("js-icon");
+});
+
+test("shows a link to the code editor page", async () => {
+  const { repository } = renderComponent();
+
+  await screen.findByRole("img", {
+    name: "Javascript",
+  });
+
+  const link = await screen.findByRole("link", {
+    name: new RegExp(repository.owner.login),
+  });
+
+  expect(link).toHaveAttribute("href", `/repositories/${repository.full_name}`);
 });
